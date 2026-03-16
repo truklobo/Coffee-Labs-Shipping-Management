@@ -1,0 +1,136 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} My Store - Create Shipping Record {% endblock title %}
+
+{% block content %}
+    <!-- Main Content Area -->
+    <div class="main-container">
+        <!-- Main Form Area -->
+        <main class="form-container">
+            <h1 class="page-heading">Create New Shipping Record</h1>
+            <p class="page-description">
+                Enter the details of your supply order below. All fields marked with an asterisk (<span class="required">*</span>) are required. 
+                Once submitted, the system will generate a unique Order ID and set the status to "Pending" for tracking.
+            </p>
+
+            <form id="shippingForm">
+                <!-- Supplier Information Section -->
+                <div class="form-section">
+                    <h2 class="section-heading">Supplier Information</h2>
+                    <div class="form-group">
+                        <label class="form-label" for="supplierName">
+                            Supplier Name <span class="required">*</span>
+                        </label>
+                        <input type="text" id="supplierName" class="form-input" required 
+                               placeholder="Enter supplier company name">
+                    </div>
+                </div>
+
+                <!-- Order Details Section -->
+                <div class="form-section">
+                    <h2 class="section-heading">Order Details</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="orderDate">
+                                Order Date <span class="required">*</span>
+                            </label>
+                            <input type="date" id="orderDate" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="expectedDelivery">
+                                Expected Delivery Date
+                            </label>
+                            <input type="date" id="expectedDelivery" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="actualDelivery">
+                                Actual Delivery Date
+                            </label>
+                            <input type="date" id="actualDelivery" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="itemName">
+                                Item Name <span class="required">*</span>
+                            </label>
+                            <input type="text" id="itemName" class="form-input" required placeholder="Enter item name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="orderQuantity">
+                                Order Quantity <span class="required">*</span>
+                            </label>
+                            <input type="number" id="orderQuantity" class="form-input" required min="1" placeholder="Enter quantity">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="orderTotal">
+                                Order Total ($) <span class="required">*</span>
+                            </label>
+                            <input type="number" id="orderTotal" class="form-input" required min="0" step="0.01" placeholder="Enter total amount">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="trackingNumber">
+                                Tracking Number <span class="required">*</span>
+                            </label>
+                            <input type="text" id="trackingNumber" class="form-input" required 
+                                   placeholder="Enter shipping tracking number">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="shippingCarrier">
+                                Shipping Carrier
+                            </label>
+                            <select id="shippingCarrier" class="form-select">
+                                <option value="">Select carrier...</option>
+                                <option value="FedEx">FedEx</option>
+                                <option value="UPS">UPS</option>
+                                <option value="USPS">USPS</option>
+                                <option value="DHL">DHL</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <!-- Additional Information Section -->
+                <div class="form-section">
+                    <h2 class="section-heading">Additional Information</h2>
+                    <div class="form-group">
+                        <label class="form-label" for="orderNotes">
+                            Order Notes / Special Instructions
+                        </label>
+                        <textarea id="orderNotes" class="form-textarea" 
+                                  placeholder="Enter any special handling instructions, quality requirements, or additional notes about this order..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Form Action Buttons -->
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="resetForm()">Cancel</button>
+                    <button type="submit" class="btn-submit">Create Shipping Record</button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Confirmation Overlay -->
+    <div id="confirmationOverlay" class="confirmation-overlay">
+        <div class="confirmation-box">
+            <div class="confirmation-icon">✓</div>
+            <h2 class="confirmation-title">Success!</h2>
+            <p class="confirmation-message">
+                Your shipping record has been created successfully and is now being tracked in the system.
+            </p>
+            <div class="confirmation-details" id="confirmationDetails">
+                <!-- Details will be populated by JavaScript -->
+            </div>
+            <button class="btn-action btn-add" style="padding: 15px 40px; font-size: 16px;" onclick="closeConfirmation()">
+                Close
+            </button>
+        </div>
+    </div>
+    
+{% endblock content %}
+

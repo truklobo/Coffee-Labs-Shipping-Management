@@ -1,0 +1,148 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} My Store - Modify Shipping Record {% endblock title %}
+
+{% block content %}
+    <!-- Main Content Area -->
+    <div class="main-container">
+        <main class="form-container">
+            <!-- Page Header Section -->
+            <h1 class="page-heading">Modify Shipping Record</h1>
+            <p class="page-description">
+                Search for an existing shipping record by Order ID to update delivery status, tracking information, or expected delivery date. 
+                Only orders with status "Pending" or "In Transit" can be modified.
+            </p>
+
+            <!-- Alert Messages -->
+            <div id="alertBox" class="alert"></div>
+
+            <!-- Search Section -->
+            <div class="search-section">
+                <h2 class="section-heading">Find Order</h2>
+                <div class="search-box">
+                    <div class="search-group">
+                        <label class="form-label" for="searchOrderId">
+                            Order ID <span class="required">*</span>
+                        </label>
+                        <input type="text" id="searchOrderId" class="form-input" 
+                               placeholder="Enter Order ID (e.g., ORD-1234567890)">
+                    </div>
+                    <button type="button" class="btn btn-primary btn-search" onclick="searchOrder()">Search Order</button>
+                    <button type="button" class="btn btn-secondary btn-clear" onclick="clearSearch()">Clear Search</button>
+                </div>
+            </div>
+
+            <!-- Order Details Section (Hidden by default) -->
+            <div id="detailsSection" class="details-section">
+                <h2 class="section-heading">Search Results</h2>
+                
+                <!-- Search Results Table -->
+                <div id="searchResultsContainer" class="table-responsive">
+                    <!-- AJAX will populate results here -->
+                </div>
+            </div>
+
+            <!-- Modification Form Section (Hidden by default) -->
+            <div id="modifyFormSection" class="details-section" style="display: none;">
+                <h2 class="section-heading">Modify Order</h2>
+                
+                <!-- Order Information Display -->
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Order ID</div>
+                        <div class="info-value" id="displayOrderId">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Supplier Name</div>
+                        <div class="info-value" id="displaySupplier">-</div>
+                    </div>
+                </div>
+
+                <!-- Modification Form -->
+                <div class="update-form-section">
+                    <h3 class="section-heading" style="font-size: 18px; margin-bottom: 20px;">Update Order Information</h3>
+                    <form id="modifyForm">
+                        <input type="hidden" id="hiddenShippingId">
+                        <input type="hidden" id="hiddenSupplierName">
+                        <input type="hidden" id="hiddenOrderDate">
+                        
+                        <div class="info-grid">
+                            <div class="form-group">
+                                <label class="form-label" for="updateDeliveryDate">
+                                    Expected Delivery Date
+                                </label>
+                                <input type="date" id="updateDeliveryDate" class="form-input">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="updateTracking">
+                                    Tracking Number
+                                </label>
+                                <input type="text" id="updateTracking" class="form-input" 
+                                       placeholder="Update tracking number">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="updateCarrier">
+                                    Shipping Carrier
+                                </label>
+                                <select id="updateCarrier" class="form-select">
+                                    <option value="">Select carrier...</option>
+                                    <option value="FedEx">FedEx</option>
+                                    <option value="UPS">UPS</option>
+                                    <option value="USPS">USPS</option>
+                                    <option value="DHL">DHL</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="actualDeliveryDate">
+                                    Actual Delivery Date
+                                </label>
+                                <input type="date" id="actualDeliveryDate" class="form-input">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="updateItemName">
+                                    Item Name
+                                </label>
+                                <input type="text" id="updateItemName" class="form-input">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="updateQuantity">
+                                    Quantity
+                                </label>
+                                <input type="number" id="updateQuantity" class="form-input" min="1">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="updateTotal">
+                                    Order Total
+                                </label>
+                                <input type="number" id="updateTotal" class="form-input" step="0.01" min="0">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="updateNotes">
+                                Notes
+                            </label>
+                            <textarea id="updateNotes" class="form-input" style="min-height: 80px; resize: vertical;" 
+                                      placeholder="Enter any notes..."></textarea>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="form-actions">
+                            <button type="button" class="btn-cancel" onclick="cancelEdit()">Cancel</button>
+                            <button type="submit" class="btn-update">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+{% endblock content %}
+

@@ -1,0 +1,98 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} CoffeeLabs - Shipping Management Home {% endblock title %} 
+
+{% block content %}
+    <!-- Main Content Area -->
+    <div class="main-container">
+        <div class="form-container">
+            <h1 class="page-heading" style="text-align: center;">Shipping Management System</h1>
+            <p class="page-description" style="text-align: center;">
+                Welcome to the CoffeeLabs Shipping Management System. Select an option below to manage your shipping records.
+            </p>
+
+            <!-- Navigation Buttons -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px;">
+                <!-- Create Shipping Record -->
+                <a href="{{ url_for('createshipping') }}" class="form-section" style="text-decoration: none; transition: all 0.3s ease; cursor: pointer;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 48px; margin-bottom: 20px;">📦</div>
+                        <div class="section-heading" style="border: none; padding: 0; margin-bottom: 10px;">Create Shipping Record</div>
+                        <p class="page-description" style="margin: 0;">
+                            Add a new shipping record to the database with supplier and order details.
+                        </p>
+                    </div>
+                </a>
+
+                <!-- Modify Shipping Record -->
+                <a href="{{ url_for('modifyshipping') }}" class="form-section" style="text-decoration: none; transition: all 0.3s ease; cursor: pointer;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 48px; margin-bottom: 20px;">✏️</div>
+                        <div class="section-heading" style="border: none; padding: 0; margin-bottom: 10px;">Modify Shipping Record</div>
+                        <p class="page-description" style="margin: 0;">
+                            Search and update existing shipping records with new information.
+                        </p>
+                    </div>
+                </a>
+
+                <!-- Delete Shipping Record -->
+                <a href="{{ url_for('deleteshipping') }}" class="form-section" style="text-decoration: none; transition: all 0.3s ease; cursor: pointer;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 48px; margin-bottom: 20px;">🗑️</div>
+                        <div class="section-heading" style="border: none; padding: 0; margin-bottom: 10px;">Delete Shipping Record</div>
+                        <p class="page-description" style="margin: 0;">
+                            Remove shipping records from the database with filtering options.
+                        </p>
+                    </div>
+                </a>
+
+                <!-- Search Order Status -->
+                <a href="{{ url_for('search_page') }}" class="form-section" style="text-decoration: none; transition: all 0.3s ease; cursor: pointer;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 48px; margin-bottom: 20px;">🔍</div>
+                        <div class="section-heading" style="border: none; padding: 0; margin-bottom: 10px;">Search Order Status</div>
+                        <p class="page-description" style="margin: 0;">
+                            Search and view shipping records by various criteria.
+                        </p>
+                    </div>
+                </a>
+
+                <!-- Business Analysis Chat -->
+                <a href="{{ url_for('chat') }}" class="form-section" style="text-decoration: none; transition: all 0.3s ease; cursor: pointer;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 48px; margin-bottom: 20px;">💬</div>
+                        <div class="section-heading" style="border: none; padding: 0; margin-bottom: 10px;">Business Analysis Chat</div>
+                        <p class="page-description" style="margin: 0;">
+                            Get AI-powered insights and analysis for your business operations.
+                        </p>
+                    </div>
+                </a>
+
+                <!-- Analytics Dashboard -->
+                <a href="{{ url_for('visual') }}" class="form-section" style="text-decoration: none; transition: all 0.3s ease; cursor: pointer;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 48px; margin-bottom: 20px;">📊</div>
+                        <div class="section-heading" style="border: none; padding: 0; margin-bottom: 10px;">Analytics</div>
+                        <p class="page-description" style="margin: 0;">
+                            View interactive charts and statistics about your shipping data.
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .form-section:hover {
+            background: rgba(212, 165, 116, 0.15);
+            border-color: #D4A574;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(212, 165, 116, 0.3);
+        }
+        
+        .form-section:hover .section-heading {
+            color: #D4A574;
+        }
+    </style>
+
+{% endblock content %}

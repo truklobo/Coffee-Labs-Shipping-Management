@@ -1,0 +1,478 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Shipping Analytics Dashboard {% endblock title %}
+
+{% block content %}
+    <!-- Main Content Area -->
+    <div class="main-container">
+        <main class="form-container">
+            <!-- Page Header Section -->
+            <h1 class="page-heading">Shipping Analytics Dashboard</h1>
+            <p class="page-description">
+                Visual insights into your shipping operations, costs, and performance metrics.
+            </p>
+
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="9" y1="9" x2="15" y2="9"></line>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value">{{ stats.total_orders }}</h3>
+                        <p class="stat-label">Total Orders</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon success">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value">{{ stats.orders_delivered }}</h3>
+                        <p class="stat-label">Delivered</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon warning">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 17h14M5 17v5h14v-5M5 17V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10"></path>
+                            <path d="M12 12V7"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value">{{ stats.orders_in_transit }}</h3>
+                        <p class="stat-label">In Transit</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon info">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value stat-value-small" title="{{ stats.top_supplier_name }}">{{ stats.top_supplier_name }}</h3>
+                        <p class="stat-label">Top Supplier: ${{ "%.2f"|format(stats.top_supplier_cost) }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="charts-grid">
+                <!-- Pie Chart -->
+                <div class="chart-box">
+                    <h2 class="section-heading">Total Costs by Supplier</h2>
+                    <p class="chart-description">Distribution of spending across suppliers</p>
+                    <div class="chart-wrapper">
+                        <canvas id="supplierPieChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Bar Chart -->
+                <div class="chart-box">
+                    <h2 class="section-heading">Orders by Shipping Carrier</h2>
+                    <p class="chart-description">Comparison of carrier usage</p>
+                    <div class="chart-wrapper">
+                        <canvas id="carrierBarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cost Analysis Line Chart -->
+            <div class="chart-box full-width">
+                <h2 class="section-heading">Monthly Cost Analysis</h2>
+                <p class="chart-description">Total spending grouped by month (last 12 months with data)</p>
+                <div class="chart-wrapper-large">
+                    <canvas id="monthlyCostChart"></canvas>
+                </div>
+            </div>
+        </main>
+    </div>
+
+<style>
+    /* Statistics Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #6B4423 0%, #8B5A3C 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        flex-shrink: 0;
+    }
+
+    .stat-icon.success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    }
+
+    .stat-icon.warning {
+        background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+    }
+
+    .stat-icon.info {
+        background: linear-gradient(135deg, #17a2b8 0%, #007bff 100%);
+    }
+
+    .stat-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 0 0 0.25rem 0;
+        color: #2d3748;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .stat-value-small {
+        font-size: 1.2rem;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    /* Charts Grid */
+    .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+        gap: 2rem;
+        margin: 2rem 0;
+    }
+
+    .chart-box {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .chart-box.full-width {
+        margin-top: 2rem;
+    }
+
+    .chart-description {
+        font-size: 0.95rem;
+        color: #6c757d;
+        margin-bottom: 1.5rem;
+    }
+
+    .chart-wrapper {
+        position: relative;
+        height: 350px;
+    }
+
+    .chart-wrapper-large {
+        position: relative;
+        height: 400px;
+    }
+
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .charts-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+        }
+
+        .stat-value-small {
+            font-size: 1rem;
+        }
+
+        .chart-wrapper {
+            height: 300px;
+        }
+
+        .chart-wrapper-large {
+            height: 250px;
+        }
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<script>
+    // Prepare data from Flask backend
+    const supplierData = {{ supplier_data | tojson }};
+    const carrierData = {{ carrier_data | tojson }};
+    const monthlyCosts = {{ monthly_costs | tojson }};
+    
+    // Generate colors
+    const colors = [
+        '#667eea', '#764ba2', '#f093fb', '#4facfe', '#00f2fe',
+        '#43e97b', '#38f9d7', '#fa709a', '#fee140', '#30cfd0'
+    ];
+    
+    // ========================================================================
+    // PIE CHART - Supplier Costs
+    // ========================================================================
+    const supplierLabels = supplierData.map(item => item.supplier_name);
+    const supplierValues = supplierData.map(item => parseFloat(item.total_cost));
+    
+    const pieCtx = document.getElementById('supplierPieChart').getContext('2d');
+    const supplierChart = new Chart(pieCtx, {
+        type: 'pie',
+        data: {
+            labels: supplierLabels,
+            datasets: [{
+                label: 'Total Cost',
+                data: supplierValues,
+                backgroundColor: colors.slice(0, supplierLabels.length),
+                borderColor: '#fff',
+                borderWidth: 2,
+                hoverOffset: 10
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        font: { size: 12, family: "'Inter', sans-serif" },
+                        usePointStyle: true,
+                        pointStyle: 'circle'
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (label) label += ': ';
+                            label += '$' + context.parsed.toLocaleString('en-US', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            });
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((context.parsed / total) * 100).toFixed(1);
+                            label += ' (' + percentage + '%)';
+                            return label;
+                        }
+                    },
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 12,
+                    cornerRadius: 8,
+                    titleFont: { size: 14, weight: 'bold' },
+                    bodyFont: { size: 13 }
+                }
+            }
+        }
+    });
+
+    // ========================================================================
+    // BAR CHART - Orders by Carrier
+    // ========================================================================
+    const carrierLabels = carrierData.map(item => item.carrier);
+    const carrierValues = carrierData.map(item => item.order_count);
+    
+    const barCtx = document.getElementById('carrierBarChart').getContext('2d');
+    const carrierChart = new Chart(barCtx, {
+        type: 'bar',
+        data: {
+            labels: carrierLabels,
+            datasets: [{
+                label: 'Number of Orders',
+                data: carrierValues,
+                backgroundColor: colors.slice(0, carrierLabels.length),
+                borderColor: colors.slice(0, carrierLabels.length),
+                borderWidth: 1,
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.parsed.y + ' orders';
+                        }
+                    },
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 12,
+                    cornerRadius: 8,
+                    titleFont: { size: 14, weight: 'bold' },
+                    bodyFont: { size: 13 }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        font: { size: 12 },
+                        callback: function(value) {
+                            return Number.isInteger(value) ? value : '';
+                        }
+                    },
+                    grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                },
+                x: {
+                    ticks: { font: { size: 12 } },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+
+    // ========================================================================
+    // LINE CHART - Monthly Cost Analysis
+    // ========================================================================
+    // Use month_label from database which formats as "January 2025"
+    const monthLabels = monthlyCosts.map(item => item.month_label);
+    const monthlyValues = monthlyCosts.map(item => parseFloat(item.monthly_cost));
+    const orderCounts = monthlyCosts.map(item => item.order_count);
+    
+    console.log('Monthly Data:', monthlyCosts);
+    console.log('Labels:', monthLabels);
+    console.log('Values:', monthlyValues);
+    
+    const lineCtx = document.getElementById('monthlyCostChart').getContext('2d');
+    const monthlyChart = new Chart(lineCtx, {
+        type: 'line',
+        data: {
+            labels: monthLabels,
+            datasets: [{
+                label: 'Monthly Spending',
+                data: monthlyValues,
+                borderColor: '#6B4423',
+                backgroundColor: 'rgba(107, 68, 35, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 8,
+                pointHoverRadius: 10,
+                pointBackgroundColor: '#6B4423',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { 
+                    display: true,
+                    labels: {
+                        font: { size: 14, weight: 'bold' }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const idx = context.dataIndex;
+                            return [
+                                'Total: $' + context.parsed.y.toLocaleString('en-US', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                }),
+                                'Orders: ' + orderCounts[idx]
+                            ];
+                        }
+                    },
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 16,
+                    cornerRadius: 8,
+                    titleFont: { size: 16, weight: 'bold' },
+                    bodyFont: { size: 15 }
+                },
+                datalabels: {
+                    display: true,
+                    align: 'top',
+                    anchor: 'end',
+                    color: '#6B4423',
+                    font: {
+                        size: 12,
+                        weight: 'bold'
+                    },
+                    formatter: function(value) {
+                        return '$' + value.toLocaleString('en-US', {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0
+                        });
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        font: { size: 14, weight: '600' },
+                        padding: 10,
+                        callback: function(value) {
+                            return '$' + value.toLocaleString('en-US', {
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 0
+                            });
+                        }
+                    },
+                    grid: { 
+                        color: 'rgba(0, 0, 0, 0.08)',
+                        lineWidth: 1
+                    }
+                },
+                x: {
+                    ticks: { 
+                        font: { size: 13, weight: '600' },
+                        padding: 10,
+                        maxRotation: 45,
+                        minRotation: 45
+                    },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

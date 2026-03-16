@@ -1,0 +1,47 @@
+<!-- only used to render table elements, not extend base page -->
+<table class="table">
+    <thead>
+        <tr>
+        <th scope="col">Shipping ID</th>
+        <th scope="col">Supplier Name</th>
+        <th scope="col">Order Date</th>
+        <th scope="col">Expected Delivery</th>
+        <th scope="col">Actual Delivery</th>
+        <th scope="col">Tracking Number</th>
+        <th scope="col">Shipping Carrier</th>
+        <th scope="col">Item Name</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Order Total</th>
+        <th scope="col">Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for order in orders %}
+        <tr class="clickable-row" 
+            data-shipping-id="{{ order.shipping_id }}"
+            data-supplier-name="{{ order.supplier_name }}"
+            data-order-date="{{ order.order_date }}"
+            data-exp-delivery="{{ order.exp_delivery_date or '' }}"
+            data-actual-delivery="{{ order.actual_delivery_date or '' }}"
+            data-tracking="{{ order.tracking_number }}"
+            data-carrier="{{ order.shipping_carrier or '' }}"
+            data-item="{{ order.item_name }}"
+            data-quantity="{{ order.quantity }}"
+            data-total="{{ order.order_total }}"
+            data-notes="{{ order.notes }}"
+            style="cursor: pointer;">
+        <th scope="row">{{ order.shipping_id }}</th>
+        <td>{{ order.supplier_name }}</td>
+        <td>{{ order.order_date }}</td>
+        <td>{{ order.exp_delivery_date or 'None' }}</td>
+        <td>{{ order.actual_delivery_date or 'None' }}</td>
+        <td>{{ order.tracking_number }}</td>
+        <td>{{ order.shipping_carrier }}</td>
+        <td>{{ order.item_name }}</td>
+        <td>{{ order.quantity }}</td>
+        <td>${{ order.order_total }}</td>
+        <td>{{ order.notes }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

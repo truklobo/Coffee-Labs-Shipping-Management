@@ -1,0 +1,103 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Search Orders - CoffeeLabs {% endblock title %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+{% endblock stylesheets %}
+
+{% block content %}
+    <!-- Search Filters Section -->
+    <section class="page-section">
+        <div class="container">
+            <div class="p-5 bg-faded rounded">
+                <h2 class="mb-4 section-heading">
+                    <span class="section-heading-upper">Find Your Orders</span>
+                </h2>
+				<p class="mb-4 text-white">Search and filter supply order records to retrieve delivery status information. Use any combination of filters below to find specific orders by supplier name, order ID, or shipping carrier.</p>
+                
+                <!-- Alert Messages -->
+                <div id="alertBox" class="alert" style="display: none;"></div>
+                
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="filterOrderId">Order ID:</label>
+                        <input type="text" name="filterOrderId" id="filterOrderId" class="form-control" placeholder="Enter Order ID">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="filterSupplier">Supplier Name:</label>
+                        <input type="text" name="filterSupplier" id="filterSupplier" class="form-control" placeholder="Enter supplier name">
+                    </div>
+                </div>
+
+                <!-- Sort and Filter Options -->
+                <div class="row g-3 mb-3">
+                    <div class="col-md-3">
+                        <label class="form-label" for="filterCarrier">Shipping Carrier:</label>
+                        <select id="filterCarrier" name="filterCarrier" class="form-select">
+                            <option value="">All Carriers</option>
+                            <option value="FedEx">FedEx</option>
+                            <option value="UPS">UPS</option>
+                            <option value="USPS">USPS</option>
+                            <option value="DHL">DHL</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label" for="sortByDate">Order Date:</label>
+                        <select id="sortByDate" name="sortByDate" class="form-select">
+                            <option value="">No Sorting</option>
+                            <option value="date_asc">Oldest First</option>
+                            <option value="date_desc">Newest First</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label" for="sortByItem">Item Name:</label>
+                        <select id="sortByItem" name="sortByItem" class="form-select">
+                            <option value="">No Sorting</option>
+                            <option value="item_asc">A-Z</option>
+                            <option value="item_desc">Z-A</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label" for="sortByTotal">Order Total:</label>
+                        <select id="sortByTotal" name="sortByTotal" class="form-select">
+                            <option value="">No Sorting</option>
+                            <option value="total_asc">Low to High</option>
+                            <option value="total_desc">High to Low</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-secondary" onclick="clearFilters()">Clear Filters</button>
+                    <button type="button" class="btn btn-primary" onclick="searchOrders()">Search Orders</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="page-section">
+        <div class="container">
+            <div class="p-5 bg-faded rounded">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0 section-heading">
+                        <span class="section-heading-lower">Search Results</span>
+                    </h2>
+                    <div class="text-muted">
+                        Found <strong id="resultCount">0</strong> order(s)
+                    </div>
+                </div>
+                
+                <div id="resultsTableContainer" class="table-responsive">
+                    <!-- AJAX will populate results here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

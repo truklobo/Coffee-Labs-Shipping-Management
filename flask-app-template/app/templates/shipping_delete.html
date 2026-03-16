@@ -1,0 +1,174 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} My Store - Delete Shipping Record {% endblock title %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+    <style>
+    /* Main Container and Page */
+    .main-container {
+        max-width: 1400px;
+        margin: 40px auto;
+        padding: 0 40px;
+    }
+    .page-container {
+        background: rgba(30, 35, 45, 0.95);
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+    .page-heading {
+        color: #D4A574;
+        font-size: 32px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    .page-description {
+        color: #B8B8B8;
+        font-size: 16px;
+        margin-bottom: 35px;
+        line-height: 1.6;
+    }
+    /* Filter Section */
+    .filter-section {
+        background: rgba(44, 51, 64, 0.6);
+        border-radius: 10px;
+        padding: 30px;
+        margin-bottom: 30px;
+        border: 1px solid #4A5568;
+    }
+    .section-heading {
+        color: #D4A574;
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #4A5568;
+    }
+    .form-label {
+        display: block;
+        color: #E8E8E8;
+        font-size: 15px;
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+    .form-select {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid #4A5568;
+        border-radius: 8px;
+        background: rgba(30, 35, 45, 0.9);
+        color: #E8E8E8;
+        font-size: 15px;
+        transition: all 0.3s ease;
+    }
+    .form-select:focus {
+        outline: none;
+        border-color: #D4A574;
+        background: rgba(30, 35, 45, 1);
+        box-shadow: 0 0 0 4px rgba(212, 165, 116, 0.15);
+    }
+    .details-section {
+        background: rgba(44, 51, 64, 0.6);
+        border-radius: 10px;
+        padding: 30px;
+        margin-bottom: 30px;
+        border: 1px solid #4A5568;
+        display: none;
+    }
+    .details-section.show {
+        display: block;
+    }
+    /* Alert Messages */
+    .alert {
+        padding: 18px 24px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        display: none;
+        animation: slideDown 0.4s ease;
+    }
+    .alert.show {
+        display: block;
+    }
+    .alert-success {
+        background: rgba(72, 187, 120, 0.15);
+        border: 2px solid #48BB78;
+        color: #68D391;
+    }
+    .alert-error {
+        background: rgba(239, 68, 68, 0.15);
+        border: 2px solid #EF4444;
+        color: #FC8181;
+    }
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    .clickable-row:hover {
+        background: rgba(212, 165, 116, 0.1);
+    }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+    <!-- Main Content Area -->
+    <div class="main-container">
+        <main class="form-container">
+            <h1 class="page-heading">Delete Shipping Record</h1>
+            <p class="page-description">
+                View all shipping records and delete entries. Click on any row to select it for deletion.
+                Use the filters below to sort and organize the records.
+            </p>
+
+            <!-- Alert Messages -->
+            <div id="alertBox" class="alert"></div>
+
+            <!-- Filter Section -->
+            <div class="filter-section">
+                <h2 class="section-heading">Filter Records</h2>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label" for="sortBy">Sort By:</label>
+                        <select id="sortBy" class="form-select" onchange="loadRecords()">
+                            <option value="supplier_asc">Supplier Name (A-Z)</option>
+                            <option value="supplier_desc">Supplier Name (Z-A)</option>
+                            <option value="date_desc" selected>Order Date (Newest First)</option>
+                            <option value="date_asc">Order Date (Oldest First)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="filterCarrier">Filter by Carrier:</label>
+                        <select id="filterCarrier" class="form-select" onchange="loadRecords()">
+                            <option value="">All Carriers</option>
+                            <option value="FedEx">FedEx</option>
+                            <option value="UPS">UPS</option>
+                            <option value="USPS">USPS</option>
+                            <option value="DHL">DHL</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+		<br>
+            <!-- Records Section -->
+            <div id="recordsSection" class="details-section show">
+                <h2 class="section-heading">All Records</h2>
+                
+                <!-- Records Table -->
+                <div id="recordsTableContainer" class="table-responsive">
+                    <!-- AJAX will populate results here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
